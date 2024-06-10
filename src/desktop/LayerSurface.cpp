@@ -175,9 +175,6 @@ void CLayerSurface::onUnmap() {
 
     std::erase_if(g_pInputManager->m_dExclusiveLSes, [this](const auto& other) { return !other.lock() || other.lock() == self.lock(); });
 
-    if (!g_pInputManager->m_dExclusiveLSes.empty())
-        g_pCompositor->focusSurface(g_pInputManager->m_dExclusiveLSes[0]->layerSurface->surface);
-
     if (!g_pCompositor->getMonitorFromID(monitorID) || g_pCompositor->m_bUnsafeState) {
         Debug::log(WARN, "Layersurface unmapping on invalid monitor (removed?) ignoring.");
 
@@ -216,6 +213,10 @@ void CLayerSurface::onUnmap() {
         wlr_surface* foundSurface = nullptr;
 
         g_pCompositor->m_pLastFocus = nullptr;
+
+        // try to focus the last exclusive ls first
+        if (!g_pInputManager->m_dExclusiveLSes.empty())
+            g_pCompositor->focusSurface(g_pInputManager->m_dExclusiveLSes[g_pInputManager->m_dExclusiveLSes.size() - 1]->surface.wlr());
 
         // find LS-es to focus
         foundSurface = g_pCompositor->vectorToLayerSurface(g_pInputManager->getMouseCoordsInternal(), &PMONITOR->m_aLayerSurfaceLayers[ZWLR_LAYER_SHELL_V1_LAYER_OVERLAY],
