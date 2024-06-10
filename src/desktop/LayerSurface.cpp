@@ -217,7 +217,7 @@ void CLayerSurface::onUnmap() {
 
         // try to focus the last exclusive ls first
         if (!g_pInputManager->m_dExclusiveLSes.empty())
-            g_pCompositor->focusSurface(g_pInputManager->m_dExclusiveLSes[g_pInputManager->m_dExclusiveLSes.size() - 1]->surface->resource());
+            g_pCompositor->focusSurface(g_pInputManager->m_dExclusiveLSes[g_pInputManager->m_dExclusiveLSes.size() - 1]->surface.wlr());
 
         // find LS-es to focus
         foundSurface = g_pCompositor->vectorToLayerSurface(g_pInputManager->getMouseCoordsInternal(), &PMONITOR->m_aLayerSurfaceLayers[ZWLR_LAYER_SHELL_V1_LAYER_OVERLAY],
@@ -312,7 +312,7 @@ void CLayerSurface::onCommit() {
     }
 
     if (mapped) {
-        const bool WASLASTFOCUS = g_pCompositor->m_pLastFocus == surface->resource();
+        const bool WASLASTFOCUS = g_pCompositor->m_pLastFocus == surface.wlr();
         const bool WASEXCLUSIVE = interactivity == ZWLR_LAYER_SURFACE_V1_KEYBOARD_INTERACTIVITY_EXCLUSIVE;
         const bool ISEXCLUSIVE  = layerSurface->current.interactivity == ZWLR_LAYER_SURFACE_V1_KEYBOARD_INTERACTIVITY_EXCLUSIVE;
 
@@ -328,10 +328,10 @@ void CLayerSurface::onCommit() {
             // if not focused last and exclusive or accepting input + unconstrained
             g_pSeatManager->setGrab(nullptr);
             g_pInputManager->releaseAllMouseButtons();
-            g_pCompositor->focusSurface(surface->resource());
+            g_pCompositor->focusSurface(surface.wlr());
 
             const auto LOCAL = g_pInputManager->getMouseCoordsInternal() - Vector2D(geometry.x + PMONITOR->vecPosition.x, geometry.y + PMONITOR->vecPosition.y);
-            g_pSeatManager->setPointerFocus(surface->resource(), LOCAL);
+            g_pSeatManager->setPointerFocus(surface.wlr(), LOCAL);
             g_pInputManager->m_bEmptyFocusCursorSet = false;
         }
     }
