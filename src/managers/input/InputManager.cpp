@@ -1383,13 +1383,13 @@ void CInputManager::refocusLastWindow(CMonitor* pMonitor) {
 
     Vector2D               surfaceCoords;
     PHLLS                  pFoundLayerSurface;
-    SP<CWLSurfaceResource> foundSurface = nullptr;
+    wlr_surface* foundSurface = nullptr;
 
     g_pInputManager->releaseAllMouseButtons();
 
     // first try for an exclusive layer
     if (!m_dExclusiveLSes.empty())
-        foundSurface = m_dExclusiveLSes[m_dExclusiveLSes.size() - 1]->surface->resource();
+        foundSurface = m_dExclusiveLSes[m_dExclusiveLSes.size() - 1]->surface.wlr();
 
     // then any surfaces above windows on the same monitor
     if (!foundSurface)
