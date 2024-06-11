@@ -149,6 +149,7 @@ void CInputManager::mouseMoveUnified(uint32_t time, bool refocus) {
     Vector2D     surfacePos = Vector2D(-1337, -1337);
     PHLWINDOW    pFoundWindow;
     PHLLS        pFoundLayerSurface;
+    SSessionLockSurface*   pSessionLock = nullptr;
 
     if (!g_pCompositor->m_bReadyToProcess || g_pCompositor->m_bIsShuttingDown || g_pCompositor->m_bUnsafeState)
         return;
@@ -255,12 +256,12 @@ void CInputManager::mouseMoveUnified(uint32_t time, bool refocus) {
         g_pCompositor->setActiveMonitor(PMONITOR);
 
     if (g_pSessionLockManager->isSessionLocked()) {
-        const auto PSLS = PMONITOR ? g_pSessionLockManager->getSessionLockSurfaceForMonitor(PMONITOR->ID) : nullptr;
+        pSessionLock = PMONITOR ? g_pSessionLockManager->getSessionLockSurfaceForMonitor(PMONITOR->ID) : nullptr;
 
-        if (!PSLS)
+        if (!pSessionLock)
             return;
 
-        foundSurface = PSLS->surface->surface();
+        foundSurface = pSessionLock->surface->surface();
         surfacePos   = PMONITOR->vecPosition;
     }
 
@@ -449,7 +450,9 @@ void CInputManager::mouseMoveUnified(uint32_t time, bool refocus) {
             restoreCursorIconToApp();
     }
 
-    if (pFoundWindow) {
+    if (pSessionLock != nullptr)
+        g_pCompositor->focusSurface(foundSurface);
+    else if (pFoundWindow) {
         // change cursor icon if hovering over border
         if (*PRESIZEONBORDER && *PRESIZECURSORICON) {
             if (!pFoundWindow->m_bIsFullscreen && !pFoundWindow->hasPopupAt(mouseCoords)) {
