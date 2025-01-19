@@ -28,6 +28,7 @@ void CSurfacePassElement::draw(const CRegion& damage) {
         g_pHyprOpenGL->m_RenderData.primarySurfaceUVBottomRight = Vector2D(-1, -1);
         g_pHyprOpenGL->m_RenderData.useNearestNeighbor          = false;
         g_pHyprOpenGL->m_RenderData.clipBox                     = {};
+        g_pHyprOpenGL->m_RenderData.clipRegion                  = {};
         g_pHyprOpenGL->m_RenderData.discardMode                 = 0;
         g_pHyprOpenGL->m_RenderData.discardOpacity              = 0;
         g_pHyprOpenGL->m_RenderData.useNearestNeighbor          = false;
@@ -74,6 +75,9 @@ void CSurfacePassElement::draw(const CRegion& damage) {
         discard();
         return;
     }
+
+    if (PSURFACE)
+        g_pHyprOpenGL->m_RenderData.clipRegion = PSURFACE->m_visibleRegion.copy().translate(windowBox.pos());
 
     const bool MISALIGNEDFSV1 = std::floor(data.pMonitor->scale) != data.pMonitor->scale /* Fractional */ && data.surface->current.scale == 1 /* fs protocol */ &&
         windowBox.size() != data.surface->current.bufferSize /* misaligned */ && DELTALESSTHAN(windowBox.width, data.surface->current.bufferSize.x, 3) &&

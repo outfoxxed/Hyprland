@@ -166,7 +166,7 @@ CProtocolManager::CProtocolManager() {
     PROTO::singlePixel         = std::make_unique<CSinglePixelProtocol>(&wp_single_pixel_buffer_manager_v1_interface, 1, "SinglePixel");
     PROTO::securityContext     = std::make_unique<CSecurityContextProtocol>(&wp_security_context_manager_v1_interface, 1, "SecurityContext");
     PROTO::ctm                 = std::make_unique<CHyprlandCTMControlProtocol>(&hyprland_ctm_control_manager_v1_interface, 1, "CTMControl");
-    PROTO::hyprlandSurface     = std::make_unique<CHyprlandSurfaceProtocol>(&hyprland_surface_manager_v1_interface, 1, "HyprlandSurface");
+    PROTO::hyprlandSurface     = std::make_unique<CHyprlandSurfaceProtocol>(&hyprland_surface_manager_v1_interface, 2, "HyprlandSurface");
 
     if (*PENABLEXXCM) {
         PROTO::colorManagement     = std::make_unique<CColorManagementProtocol>(&xx_color_manager_v4_interface, 1, "ColorManagement");
