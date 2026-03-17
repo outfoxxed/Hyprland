@@ -18,7 +18,13 @@ CWLOutputResource::CWLOutputResource(SP<CWlOutput> resource_, PHLMONITOR pMonito
         if (m_monitor && PROTO::outputs.contains(m_monitor->m_name))
             PROTO::outputs.at(m_monitor->m_name)->destroyResource(this);
     });
-    m_resource->setRelease([this](CWlOutput* r) {
+		m_resource->setRelease([this](CWlOutput* r) {
+				for (auto& surface : PROTO::compositor->m_surfaces) {
+						if (surface->m_client == r->client()) {
+								surface->m_resource->sendEnter(r);
+						}
+				}
+
         if (m_monitor && PROTO::outputs.contains(m_monitor->m_name))
             PROTO::outputs.at(m_monitor->m_name)->destroyResource(this);
     });

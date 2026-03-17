@@ -134,10 +134,10 @@ class CWLSurfaceResource {
     // localCoords param is relative to 0,0 of this surface
     std::pair<SP<CWLSurfaceResource>, Vector2D> at(const Vector2D& localCoords, bool allowsInput = false);
 
-  private:
     SP<CWlSurface>         m_resource;
     wl_client*             m_client = nullptr;
 
+  private:
     void                   destroy();
     void                   releaseBuffers(bool onlyCurrent = true);
     void                   dropPendingBuffer();
@@ -177,6 +177,7 @@ class CWLCompositorProtocol : public IWaylandProtocol {
     void destroyResource(CWLRegionResource* resource);
 
     //
+public:
     std::vector<SP<CWLCompositorResource>> m_managers;
     std::vector<SP<CWLSurfaceResource>>    m_surfaces;
     std::vector<SP<CWLRegionResource>>     m_regions;
